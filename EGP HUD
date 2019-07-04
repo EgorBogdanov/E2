@@ -1,0 +1,37 @@
+@name EGR[EGP HUD]
+@inputs EGP:wirelink
+@outputs 
+@persist 
+
+if(first()){
+    CR_SIZE     = 20
+    CR_COLOR    = vec(255,0,0)
+    CR_THICKNESS= 5
+    
+    ResW        = 1920
+    ResH        = 1080
+    
+    CrossHair = "cross" # dot or cross
+    
+    EGP:egpClear()
+    switch(CrossHair){
+        case "dot",
+            local Pos   = vec2(ResW,ResH)/2
+            local Size  = vec2(CR_SIZE)/2
+            
+            EGP:egpCircle(1,Pos,Size)
+            EGP:egpColor(1,CR_COLOR)
+        break
+        case "cross",
+            local Pos   = vec2(ResW,ResH)/2
+            local Size  = vec2(CR_SIZE,CR_THICKNESS)
+            local Size2  = vec2(CR_THICKNESS,CR_SIZE)
+            
+            EGP:egpBox(1,Pos,Size)
+            EGP:egpBox(2,Pos,Size2)
+            
+            EGP:egpColor(1,CR_COLOR)
+            EGP:egpColor(2,CR_COLOR)
+        break
+    }
+}
