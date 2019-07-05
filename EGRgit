@@ -1,0 +1,58 @@
+@name EGR git
+@persist Show Name:array Chips:table Loading ChipName:string
+
+if(first()){
+    runOnHTTP(1)
+    
+    Show = 0
+    Loading = 0
+    Chips = table()
+    ChipName= ""
+    
+    dPanel("Menu",vec2(500,100),vec2(220,500))
+    dListBox("Chips","Menu",vec2(10,100),vec2(200,368))
+    dButton("Download","Menu",vec2(10,50),vec2(100,25))
+    dColor("Menu",10,10,10,150)
+    dShow("Menu",1)
+    
+    if(httpCanRequest()){
+        httpRequest("https://github.com/EgorBogdanov/E2")
+    }else{
+        printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(50,255,255),"Please waite :3")
+        selfDestruct()
+    }
+    dShow("Menu",1)
+}
+interval(100)
+if(httpClk() && !Loading){
+    local Data=httpData() 
+    Chips=Data:gmatch("js--navigation--open\" title=\"(.-)\"")
+    for(I=1,Chips:count()){
+        Name[ I, string ] = " "
+        Name[ I, string ] = I+"."+Chips[I,array][1,string]
+        dArray("Chips",Name)     
+    }
+    Loading = 1
+}elseif(httpClk()){
+    if(ChipName != ""){
+        printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(50,255,255),"You chip e2shared")
+        fileWrite(">e2shared/"+ChipName+".txt",httpData())
+    }else{
+        printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(255,0,0),"Select chip to download!")
+    }
+}
+if(dClk("Download")){ 
+    local Point = dSval("Chips"):explode(".")[1,string]:toNumber()
+    if(httpCanRequest()){
+        ChipName = Chips[Point,array][1,string]
+        httpRequest("https://raw.githubusercontent.com/EgorBogdanov/E2/master/"+ChipName:replace(" ","%20"))
+    }else{
+        printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(50,255,255),"Please waite :3")
+        entity():soundPlay(1, 0, "buttons/button11.wav")
+    }
+}
+if(changed(owner():keyPressed("n")) && owner():keyPressed("n")){
+    Show = !Show
+    dShow("Menu",Show)
+    enableMouse(Show)
+}
