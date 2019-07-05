@@ -21,7 +21,7 @@ if(first()){
         printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(50,255,255),"Please waite :3")
         selfDestruct()
     }
-    dShow("Menu",1)
+    dShow("Menu",0)
 }
 interval(100)
 if(httpClk() && !Loading){
