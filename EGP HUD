@@ -8,7 +8,7 @@ if(first()){
     CR_COLOR    = vec(255,0,0)
     CR_THICKNESS= 5
     
-    ResW        = 1920
+    ResW        = 1920 #Resolution of screen
     ResH        = 1080
     
     CrossHair = "cross" # dot or cross
