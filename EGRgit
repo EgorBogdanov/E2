@@ -1,7 +1,7 @@
 @name EGR git
 @persist Show Name:array Chips:table Loading ChipName:string
 
-if(first()){
+if(first()) {
     runOnHTTP(1)
     
     Show = 0
@@ -24,24 +24,30 @@ if(first()){
     dShow("Menu",0)
 }
 interval(100)
-if(httpClk() && !Loading){
+
+if(httpClk() && !Loading) {
     local Data=httpData() 
     Chips=Data:gmatch("js--navigation--open\" title=\"(.-)\"")
-    for(I=1,Chips:count()){
+    
+    for(I=1,Chips:count())
+    {
+        local ChipName = Chips[I,array]:string(1)
         Name[ I, string ] = " "
-        Name[ I, string ] = I+"."+Chips[I,array][1,string]
+        Name[ I, string ] = I + "." + ChipName
+
         dArray("Chips",Name)     
     }
     Loading = 1
-}elseif(httpClk()){
+} elseif(httpClk()) {
     if(ChipName != ""){
-        printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(50,255,255),"You chip e2shared")
+        printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(50,255,255),"You chip in ../e2shared")
         fileWrite(">e2shared/"+ChipName+".txt",httpData())
     }else{
         printColor(vec(255),"[",vec(0,255,0),"EGRgit",vec(255),"]",vec(255,0,0),"Select chip to download!")
     }
 }
-if(dClk("Download")){ 
+
+if(dClk("Download")) { 
     local Point = dSval("Chips"):explode(".")[1,string]:toNumber()
     if(httpCanRequest()){
         ChipName = Chips[Point,array][1,string]
@@ -51,6 +57,7 @@ if(dClk("Download")){
         entity():soundPlay(1, 0, "buttons/button11.wav")
     }
 }
+
 if(changed(owner():keyPressed("n")) && owner():keyPressed("n")){
     Show = !Show
     dShow("Menu",Show)
