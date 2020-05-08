@@ -1,0 +1,60 @@
+@name Pixel
+@inputs 
+@outputs 
+@persist [EE Ow]:entity [Props Materials Menu]:array MaterialSelect:string Flag Id MenuStatus Show
+@trigger 
+
+if(first())
+{
+    EE=entity()
+    Ow=owner()
+    Id = 0
+    Flag = 1
+
+    holoCreate(0)
+    holoMaterial(0,"models/wireframe")
+    
+    dPanel("Menu",vec2(1920/2,1080/2),vec2(220,100))
+    dShow("Menu",0)
+    #dSlider(string name,string parent,vector2 pos,number length,number min,number max)
+    dSlider("R","Menu",vec2(10,20),220,0,255)
+    dSlider("G","Menu",vec2(10,40),220,0,255)
+    dSlider("B","Menu",vec2(10,60),220,0,255)
+    #dColor("Menu",100,255,255,150)
+}
+runOnTick(1)
+if(Ow:weapon():type()== "weapon_crowbar")
+{
+    AimPos = round(Ow:aimPos()/12)*12
+    holoPos(0,AimPos)
+    #building mode
+    if(Ow:keyUse() && changed(Ow:keyUse()) && Flag==1 )
+    {
+        Props[Id,entity] = propSpawn("models/holograms/cube.mdl",AimPos,1)
+        Props[Id,entity]:drawShadow(0)
+        Props[Id,entity]:setColor(vec(dNval("R"),dNval("G"),dNval("B")))
+        Id++
+        Flag = 0
+        timer("Spawn",100)
+    }
+    #remove
+    if(Ow:keyAttack2()&& changed(Ow:keyAttack2()))
+    {
+        Ow:aimEntity():remove()
+    }
+}else{
+    holoPos(0,EE:pos())
+}
+if(dClk("R")||dClk("G")||dClk("B")){
+    dColor("Menu",dNval("R"),dNval("G"),dNval("B"),255)
+}
+if(changed(Ow:keyPressed("n")) & Ow:keyPressed("n")){
+    Show = !Show
+    dShow("Menu",Show)
+    enableMouse(Show)
+}
+
+if(clk("Spawn"))
+{
+    Flag=1
+}
